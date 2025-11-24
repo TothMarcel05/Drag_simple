@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <title>Drag & Drop - Két Zóna</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .elem {
+            width: 100px;
+            height: 100px;
+            background: #2196F3;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px;
+            cursor: move;
+        }
+        
+        .zona {
+            width: 300px;
+            height: 200px;
+            border: 3px dashed #999;
+            margin: 20px;
+            padding: 10px;
+            display: inline-block;
+            vertical-align: top;
+        }
+        
+        .zona.drag-over {
+            border-color: #4CAF50;
+            background: #e8f5e9;
+        }
+        
+        .zona-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>Egyszerű Drag & Drop - Két Zóna</h1>
+    
+    <div class="elem" draggable="true">Helyezz át!</div>
+    
+    <div class="zona-container">
+        <div class="zona" id="zona1">Drop zóna 1</div>
+        <div class="zona" id="zona2">Drop zóna 2</div>
+    </div>
+    
+    <script>
+        const elem = document.querySelector('.elem');
+        const zonalista = document.querySelectorAll('.zona');
+        
+        // ============================================
+        // 1. LÉPÉS: dragstart - Húzás kezdete
+        // ============================================
+        elem.addEventListener('dragstart', function(e) {
+            console.log('✅ dragstart - Elkezdtem húzni');
+        });
+        
+        // Mindkét zónára hozzáadjuk az event listenereket
+        zonalista.forEach(function(zona) {
+            // ============================================
+            // 2. LÉPÉS: dragover - Drop zóna felett vagyunk
+            // ============================================
+            zona.addEventListener('dragover', function(e) {
+                e.preventDefault(); // ⚠️ FONTOS! Enélkül nem működik!
+                console.log('🔄 dragover - A zóna felett vagyok');
+            });
+            
+            // ============================================
+            // 3. LÉPÉS: dragenter - Beléptünk a zónába
+            // ============================================
+            zona.addEventListener('dragenter', function(e) {
+                e.preventDefault();
+                this.classList.add('drag-over'); // Zöld kiemelés
+                console.log('➡️ dragenter - Beléptem a zónába');
+            });
+            
+            // ============================================
+            // 4. LÉPÉS: dragleave - Elhagytuk a zónát
+            // ============================================
+            zona.addEventListener('dragleave', function(e) {
+                this.classList.remove('drag-over');
+                console.log('⬅️ dragleave - Elhagytam a zónát');
+            });
+            
+            // ============================================
+            // 5. LÉPÉS: drop - Elengedtük az elemet
+            // ============================================
+            zona.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('drag-over');
+                this.appendChild(elem); // Áthelyezzük az elemet
+                console.log('🎯 drop - Elengedtem, az elem átkerült!');
+            });
+        });
+        
+        // ============================================
+        // 6. LÉPÉS: dragend - Húzás befejeződött
+        // ============================================
+        elem.addEventListener('dragend', function(e) {
+            console.log('🏁 dragend - Húzás befejeződött');
+        });
+    </script>
+</body>
+</html>
+
